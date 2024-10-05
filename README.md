@@ -19,4 +19,5 @@ requirements about our project:
 4. Memory Usage for the Queue
 
 # BFS_graph
-https://drive.google.com/file/d/19d9LIW6XkPM8Lk1ZaSoW5GjuwOEIileF/view?usp=sharing
+Graph：https://drive.google.com/file/d/19d9LIW6XkPM8Lk1ZaSoW5GjuwOEIileF/view?usp=sharing
+Explanation： https://docs.google.com/document/d/1uZ7L2CQAXR08pcV8aus-xiloFTa3PQ_Q2X40wkUlf44/edit?usp=sharing
