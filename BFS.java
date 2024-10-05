@@ -23,11 +23,20 @@ public class BFS {
         visited.add(start);
 
         while (head < tail) {
+//            // For debugging: Check the queue
+//            System.out.print("Queue: [");
+//            for (int i = head; i < tail; i++) {
+//                Node<T> node = queue[i];
+//                System.out.print(node.getValue() + " ");
+//            }
+//            System.out.println("]");
+
             // Dequeue
             Node<T> currentNode = queue[head++];
 
-            //System.out.print("Current Node: ");
-            //System.out.println(currentNode.getValue());
+//            // For debugging: Check the current node
+//            System.out.print("Current Node: ");
+//            System.out.println(currentNode.getValue());
 
             if (currentNode.getValue().equals(value)) {
                 return Optional.of(currentNode);
@@ -50,17 +59,53 @@ public class BFS {
         Node<String> nodeB = new Node<>("B");
         Node<String> nodeC = new Node<>("C");
         Node<String> nodeD = new Node<>("D");
+        Node<String> nodeE = new Node<>("E");
+        Node<String> nodeF = new Node<>("F");
+        Node<String> nodeG = new Node<>("G");
+        Node<String> nodeH = new Node<>("H");
+        Node<String> nodeI = new Node<>("I");
+        Node<String> nodeJ = new Node<>("J");
+        Node<String> nodeK = new Node<>("K");
+        Node<String> nodeL = new Node<>("L");
+        Node<String> nodeM = new Node<>("M");
+        Node<String> nodeN = new Node<>("N");
+        Node<String> nodeO = new Node<>("O");
 
         // Number of nodes
-        int n = 4;
+        int n = 15;
 
         // Connect nodes
         nodeA.connect(nodeB);
         nodeA.connect(nodeC);
-        nodeB.connect(nodeD);
+        nodeA.connect(nodeD);
+        nodeA.connect(nodeE);
 
-        // Perform BFS to find node with the value D starting from Node A
-        Optional<Node<String>> result = BFS.search("D", nodeA, n);
+        nodeB.connect(nodeF);
+        nodeB.connect(nodeG);
+        nodeB.connect(nodeA);
+
+        nodeC.connect(nodeH);
+        nodeC.connect(nodeI);
+        nodeC.connect(nodeJ);
+        nodeC.connect(nodeA);
+
+        nodeD.connect(nodeK);
+        nodeD.connect(nodeL);
+        nodeD.connect(nodeA);
+
+        nodeE.connect(nodeN);
+        nodeE.connect(nodeM);
+        nodeE.connect(nodeA);
+
+        nodeF.connect(nodeG);
+
+        nodeL.connect(nodeM);
+        nodeL.connect(nodeO);
+
+        nodeM.connect(nodeL);
+
+        // Perform BFS to find node with the value O starting from Node A
+        Optional<Node<String>> result = BFS.search("O", nodeA, n);
 
         if (result.isPresent()) {
             System.out.println("Found node with value: " + result.get().getValue());
