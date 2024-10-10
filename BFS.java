@@ -54,6 +54,15 @@ public class BFS {
     }
 
     public static void main(String[] args) {
+        // Get the instance of the runtime
+        Runtime runtime = Runtime.getRuntime();
+
+        // Run garbage collection
+        runtime.gc();
+
+        // Get memory usage
+        long memoryUsedBefore = runtime.totalMemory() - runtime.freeMemory();
+
         // Create nodes
         Node<String> nodeA = new Node<>("A");
         Node<String> nodeB = new Node<>("B");
@@ -112,5 +121,12 @@ public class BFS {
         } else {
             System.out.println("Node not found.");
         }
+        System.out.println("Memory used before: " + memoryUsedBefore + " bytes");
+        long memoryUsedAfter = runtime.totalMemory() - runtime.freeMemory();
+        System.out.println("Memory used after: " + memoryUsedAfter + " bytes");
+
+        // Calculate the difference
+        long memoryDifference = memoryUsedAfter - memoryUsedBefore;
+        System.out.println("Memory used by the array: " + memoryDifference + " bytes");
     }
 }
