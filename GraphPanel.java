@@ -63,7 +63,7 @@ public class GraphPanel extends JFrame {
 
         // Get memory usage before the search
         long memoryBefore = runtime.totalMemory() - runtime.freeMemory();
-        Optional<Node<String>> result = graph.bfsSearch(targetValue, 15); // 执行BFS搜索
+        Optional<Node<String>> result = graph.bfsSearch(targetValue, 15); // Execute BFS search
         long memoryAfter = runtime.totalMemory() - runtime.freeMemory();
 
         // Get memory usage after the search
