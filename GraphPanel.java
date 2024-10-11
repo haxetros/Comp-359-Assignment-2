@@ -5,7 +5,7 @@ import java.awt.*;
 import java.util.Optional;
 
 public class GraphPanel extends JFrame {
-    private Graph<String> graph; //The graph structure, storing nodes and edges
+    private Graph<String> graph; // The graph structure, storing nodes and edges
     private JComboBox<String> nodeSelector; // Dropdown for selecting a node to search
     private JButton searchButton; // Button to trigger the search
     private InnerGraphPanel graphPanel; // The panel used to draw the graph visualization
@@ -70,10 +70,10 @@ public class GraphPanel extends JFrame {
         long memoryUsedByArray = memoryAfter - memoryBefore;
 
         // Build the output string containing the search result and memory usage
-        String output = "Found node with value: " + targetValue + "\n" +
-                        "Memory used before: " + memoryBefore + " bytes\n" +
-                        "Memory used after: " + memoryAfter + " bytes\n" +
-                        "Memory used by the array: " + memoryUsedByArray + " bytes";
+        String output = "<html>Found node with value: " + targetValue + "<br/>" +
+                "Memory used before: " + memoryBefore + " bytes<br/>" +
+                "Memory used after: " + memoryAfter + " bytes<br/>" +
+                "Memory used by the array: " + memoryUsedByArray + " bytes</html>";
 
         // Update the memory label to display the information
         memoryLabel.setText(output);
@@ -149,25 +149,29 @@ public class GraphPanel extends JFrame {
             g2d.drawLine(p1.x, p1.y, p2.x, p2.y);
         }
 
-        // Method to draw a node
+     // Method to draw a node
         private void drawNode(Graphics2D g2d, String node) {
             Point p = getNodePosition(node);
             int diameter = 30;
 
-            // Set color based on whether to highlight
-            if (highlightAllNodes || node.equals(highlightedNode)) {
-                g2d.setColor(Color.RED);
+            // Check if the node is the highlighted (target) node
+            if (node.equals(highlightedNode)) {
+                g2d.setColor(Color.RED); // Highlight the target node in red, including "A"
+            } else if (node.equals("A")) {
+                g2d.setColor(Color.GREEN); // Default color for node "A" when it's not the target
             } else {
-                g2d.setColor(Color.BLUE);
+                g2d.setColor(Color.BLUE); // Default color for other nodes
             }
 
-            g2d.fillOval(p.x - diameter/2, p.y - diameter/2, diameter, diameter);
+            g2d.fillOval(p.x - diameter / 2, p.y - diameter / 2, diameter, diameter);
             g2d.setColor(Color.WHITE);
             g2d.drawString(node, p.x - 5, p.y + 5);
         }
 
+
+        // Method to get node position on the panel
         private Point getNodePosition(String node) {
-            // Define positions for each node 
+            // Define positions for each node
             switch (node) {
                 case "A": return new Point(400, 50);
                 case "B": return new Point(200, 150);
