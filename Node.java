@@ -1,3 +1,5 @@
+package bfs;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -27,3 +29,5 @@ public class Node<T> {
         node.neighbors.add(this);
     }
 }
+
+
