@@ -1,6 +1,8 @@
 package bfs;
 
 import javax.swing.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Main {
     public static void main(String[] args) {
@@ -45,8 +47,26 @@ public class Main {
         nodeL.connect(nodeM);
         nodeL.connect(nodeO);
 
+        // Create a map of nodes
+        Map<String, Node<String>> nodesMap = new HashMap<>();
+        nodesMap.put("A", nodeA);
+        nodesMap.put("B", nodeB);
+        nodesMap.put("C", nodeC);
+        nodesMap.put("D", nodeD);
+        nodesMap.put("E", nodeE);
+        nodesMap.put("F", nodeF);
+        nodesMap.put("G", nodeG);
+        nodesMap.put("H", nodeH);
+        nodesMap.put("I", nodeI);
+        nodesMap.put("J", nodeJ);
+        nodesMap.put("K", nodeK);
+        nodesMap.put("L", nodeL);
+        nodesMap.put("M", nodeM);
+        nodesMap.put("N", nodeN);
+        nodesMap.put("O", nodeO);
+
         // Create the graph
-        Graph<String> graph = new Graph<>(nodeA);
+        Graph<String> graph = new Graph<>(nodeA, nodesMap);
 
         // Create and show the GraphPanel
         SwingUtilities.invokeLater(() -> new GraphPanel(graph));

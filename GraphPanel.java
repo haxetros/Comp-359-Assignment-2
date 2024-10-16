@@ -2,7 +2,9 @@ package bfs;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 public class GraphPanel extends JFrame {
     private Graph<String> graph; // The graph structure, storing nodes and edges
@@ -61,9 +63,18 @@ public class GraphPanel extends JFrame {
         Runtime runtime = Runtime.getRuntime(); // Get the JVM runtime object
         runtime.gc(); // Manually trigger garbage collection to ensure accurate memory stats
 
+        // Reset node colors before starting the search
+        for (Node<String> node : graph.getNodes().values()) {
+            node.setColor(Color.BLUE);
+        }
+        graphPanel.repaint();
+
         // Get memory usage before the search
         long memoryBefore = runtime.totalMemory() - runtime.freeMemory();
-        Optional<Node<String>> result = graph.bfsSearch(targetValue, 15); // Execute BFS search
+
+        // Perform BFS search with visualization
+        Optional<Node<String>> result = search(targetValue);
+
         long memoryAfter = runtime.totalMemory() - runtime.freeMemory();
 
         // Get memory usage after the search
@@ -79,12 +90,7 @@ public class GraphPanel extends JFrame {
         memoryLabel.setText(output);
 
         // Update the UI based on the search result
-        if (result.isPresent()) {
-            // If the target node is found, highlight it
-            graphPanel.setHighlightedNode(targetValue);
-        } else {
-            // If the target node is not found, clear any highlights and show a popup message
-            graphPanel.setHighlightedNode(null);
+        if (!result.isPresent()) {
             JOptionPane.showMessageDialog(this, "Node not found", "Search Result", JOptionPane.INFORMATION_MESSAGE);
         }
 
@@ -92,24 +98,80 @@ public class GraphPanel extends JFrame {
         graphPanel.repaint();
     }
 
+    // Modified BFS search algorithm with visualization
+    public Optional<Node<String>> search(String value) {
+        int n = 15;
+        Node<String>[] queue = new Node[n];
+        int head = 0; // Points to the front of the queue (dequeue)
+        int tail = 0; // Points to the end of the queue (enqueue)
+
+        Set<Node<String>> visited = new HashSet<>();
+
+        // Enqueue the starting node
+        Node<String> start = graph.getStartNode();
+        queue[tail++] = start;
+        visited.add(start);
+
+        start.setColor(Color.ORANGE);
+        graphPanel.repaint();
+        graphPanel.paintImmediately(graphPanel.getBounds());
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        while (head < tail) {
+            // Dequeue the next node
+            Node<String> currentNode = queue[head++];
+
+            // Set the node color to represent dequeue
+            currentNode.setColor(Color.RED);
+            graphPanel.repaint();
+            graphPanel.paintImmediately(graphPanel.getBounds());
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            // Check if we've found the value
+            if (currentNode.getValue().equals(value)) {
+                currentNode.setColor(Color.GREEN);
+                graphPanel.repaint();
+                graphPanel.paintImmediately(graphPanel.getBounds());
+                return Optional.of(currentNode);
+            }
+
+            // Enqueue unvisited neighbors
+            for (Node<String> neighbor : currentNode.getNeighbors()) {
+                if (!visited.contains(neighbor)) {
+                    queue[tail++] = neighbor;
+                    visited.add(neighbor);
+
+                    // Set neighbor color to represent enqueue
+                    neighbor.setColor(Color.ORANGE);
+                    graphPanel.repaint();
+                    graphPanel.paintImmediately(graphPanel.getBounds());
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            // Mark current node as processed
+            currentNode.setColor(Color.GRAY);
+            graphPanel.repaint();
+            graphPanel.paintImmediately(graphPanel.getBounds());
+        }
+
+        return Optional.empty();
+    }
+
     // Inner class for drawing the graph visualization
     private class InnerGraphPanel extends JPanel {
-        private String highlightedNode; // The node to be highlighted
-        private boolean highlightAllNodes; // Whether to highlight all nodes
-
-        // Set the node to be highlighted
-        public void setHighlightedNode(String node) {
-            this.highlightedNode = node; // Set the target node
-            this.highlightAllNodes = false; // Disable full highlight
-        }
-
-        // Set whether to highlight all nodes
-        public void setHighlightAllNodes(boolean highlight) {
-            this.highlightAllNodes = highlight; // Update whether to highlight all nodes
-            if (highlight) {
-                this.highlightedNode = null; // If highlighting all nodes, clear individual highlight
-            }
-        }
 
         // Override the paintComponent method of JPanel to draw the graph and nodes
         @Override
@@ -119,60 +181,53 @@ public class GraphPanel extends JFrame {
 
             // Draw edges
             g2d.setColor(Color.BLACK); // Set the edge color to black
-            drawEdge(g2d, "A", "B");
-            drawEdge(g2d, "A", "C");
-            drawEdge(g2d, "A", "D");
-            drawEdge(g2d, "A", "E");
-            drawEdge(g2d, "B", "F");
-            drawEdge(g2d, "B", "G");
-            drawEdge(g2d, "C", "H");
-            drawEdge(g2d, "C", "I");
-            drawEdge(g2d, "C", "J");
-            drawEdge(g2d, "D", "K");
-            drawEdge(g2d, "D", "L");
-            drawEdge(g2d, "E", "N");
-            drawEdge(g2d, "E", "M");
-            drawEdge(g2d, "F", "G");
-            drawEdge(g2d, "L", "M");
-            drawEdge(g2d, "L", "O");
+            drawEdges(g2d);
 
             // Draw nodes
-            for (String node : new String[]{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O"}) {
+            for (Node<String> node : graph.getNodes().values()) {
                 drawNode(g2d, node);
             }
         }
 
         // Method to draw edges between two nodes
-        private void drawEdge(Graphics2D g2d, String from, String to) {
+        private void drawEdge(Graphics2D g2d, Node<String> from, Node<String> to) {
             Point p1 = getNodePosition(from);
             Point p2 = getNodePosition(to);
             g2d.drawLine(p1.x, p1.y, p2.x, p2.y);
         }
 
-     // Method to draw a node
-        private void drawNode(Graphics2D g2d, String node) {
+        // Method to draw all edges
+        private void drawEdges(Graphics2D g2d) {
+            Set<String> drawnEdges = new HashSet<>();
+            for (Node<String> node : graph.getNodes().values()) {
+                for (Node<String> neighbor : node.getNeighbors()) {
+                    String edgeKey = node.getValue() + "-" + neighbor.getValue();
+                    String reverseEdgeKey = neighbor.getValue() + "-" + node.getValue();
+                    if (!drawnEdges.contains(edgeKey) && !drawnEdges.contains(reverseEdgeKey)) {
+                        drawEdge(g2d, node, neighbor);
+                        drawnEdges.add(edgeKey);
+                    }
+                }
+            }
+        }
+
+        // Method to draw a node
+        private void drawNode(Graphics2D g2d, Node<String> node) {
             Point p = getNodePosition(node);
             int diameter = 30;
 
-            // Check if the node is the highlighted (target) node
-            if (node.equals(highlightedNode)) {
-                g2d.setColor(Color.RED); // Highlight the target node in red, including "A"
-            } else if (node.equals("A")) {
-                g2d.setColor(Color.GREEN); // Default color for node "A" when it's not the target
-            } else {
-                g2d.setColor(Color.BLUE); // Default color for other nodes
-            }
+            g2d.setColor(node.getColor());
 
             g2d.fillOval(p.x - diameter / 2, p.y - diameter / 2, diameter, diameter);
             g2d.setColor(Color.WHITE);
-            g2d.drawString(node, p.x - 5, p.y + 5);
+            g2d.drawString(node.getValue(), p.x - 5, p.y + 5);
         }
 
-
         // Method to get node position on the panel, exact position created by chatgpt.
-        private Point getNodePosition(String node) {
+        private Point getNodePosition(Node<String> node) {
+            String value = node.getValue();
             // Define positions for each node
-            switch (node) {
+            switch (value) {
                 case "A": return new Point(400, 50);
                 case "B": return new Point(200, 150);
                 case "C": return new Point(400, 150);

@@ -1,5 +1,6 @@
 package bfs;
 
+import java.awt.Color;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -8,6 +9,7 @@ public class Node<T> {
 
     private T value;
     private List<Node<T>> neighbors;
+    private Color color = Color.BLUE;
 
     public Node(T value) {
         this.value = value;
@@ -28,6 +30,12 @@ public class Node<T> {
         this.neighbors.add(node);
         node.neighbors.add(this);
     }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
+    }
 }
-
-
