@@ -73,7 +73,7 @@ public class GraphPanel extends JFrame {
         String output = "<html>Found node with value: " + targetValue + "<br/>" +
                 "Memory used before: " + memoryBefore + " bytes<br/>" +
                 "Memory used after: " + memoryAfter + " bytes<br/>" +
-                "Memory used by the array: " + memoryUsedByArray + " bytes</html>";
+                "Memory used by the array: " + memoryUsedByArray + " bytes</html>"; // \n doesn't work here, we use <br/>
 
         // Update the memory label to display the information
         memoryLabel.setText(output);
@@ -169,7 +169,7 @@ public class GraphPanel extends JFrame {
         }
 
 
-        // Method to get node position on the panel
+        // Method to get node position on the panel, exact position created by chatgpt.
         private Point getNodePosition(String node) {
             // Define positions for each node
             switch (node) {
