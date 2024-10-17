@@ -4,7 +4,13 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
- // Modified code based on https://www.baeldung.com/java-breadth-first-search
+// Modified code based on https://www.baeldung.com/java-breadth-first-search
+
+// NOTE:
+// This class is not used at all by Main.java because the color switching visualization was too complicated to implement
+// between two classes, so we reimplemented the BFS algorithm within GraphPanel to make the visualization code simpler
+// So this class is used as a working reference for the rest of the java code
+// Use git to checkout the commit 4c5e696 to see a working BFS example using this class
 public class BFS {
 
     public static <T> Optional<Node<T>> search(T value, Node<T> start, int n) {
