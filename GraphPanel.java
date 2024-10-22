@@ -98,71 +98,81 @@ public class GraphPanel extends JFrame {
         graphPanel.repaint();
     }
 
-    // Modified BFS search algorithm with visualization
-     public Optional<Node<String>> search(String value) {
-    // Set the maximum size of the queue to 15
-    int n = 15;
-    Node<String>[] queue = new Node[n];
-    int head = 0; // Index for the front of the queue
-    int tail = 0; // Index for the end of the queue
+    public Optional<Node<String>> search(String value) {
+        // Set the maximum size of the queue to 15
+        int n = 15;
+        Node<String>[] queue = new Node[n];
+        int head = 0; // Index for the front of the queue
+        int tail = 0; // Index for the end of the queue
 
-    // Create a set to keep track of visited nodes
-    Set<Node<String>> visited = new HashSet<>();
+        // Create a set to keep track of visited nodes
+        Set<Node<String>> visited = new HashSet<>();
 
-    // Get the starting node of the graph
-    Node<String> start = graph.getStartNode();
-    queue[tail++] = start; // Add the start node to the queue
-    visited.add(start); // Mark the start node as visited
+        // Get the starting node of the graph
+        Node<String> start = graph.getStartNode();
+        queue[tail++] = start; // Add the start node to the queue
+        visited.add(start); // Mark the start node as visited
 
-    // Set the color of the start node to ORANGE and update the graph visualization
-    start.setColor(Color.ORANGE);
-    updateGraphVisual();
-
-    // Begin the breadth-first search (BFS) loop
-    while (head < tail) {
-        // Get the current node from the front of the queue
-        Node<String> currentNode = queue[head++];
-
-        // Set the current node color to RED (indicating it is being processed)
-        currentNode.setColor(Color.RED);
+        // Set the color of the start node to ORANGE and update the graph visualization
+        start.setColor(Color.ORANGE);
         updateGraphVisual();
 
-        // Check if the current node's value matches the search value
-        if (currentNode.getValue().equals(value)) {
-            // If found, set the color to GREEN and return the node
-            currentNode.setColor(Color.GREEN);
+        // Begin the breadth-first search (BFS) loop
+        while (head < tail) {
+            // Get the current node from the front of the queue
+            Node<String> currentNode = queue[head++];
+
+            // Set the current node color to RED (indicating it is being processed)
+            currentNode.setColor(Color.RED);
             updateGraphVisual();
-            return Optional.of(currentNode);
-        }
 
-        // Explore the neighbors of the current node
-        for (Node<String> neighbor : currentNode.getNeighbors()) {
-            // If the neighbor has not been visited yet
-            if (!visited.contains(neighbor)) {
-                // Check if the neighbor's value matches the search value
-                if (neighbor.getValue().equals(value)) {
-                    // If found, set the color to GREEN and return the node
-                    neighbor.setColor(Color.GREEN);
-                    updateGraphVisual();
-                    return Optional.of(neighbor);
-                }
-                // Add the neighbor to the queue and mark it as visited
-                queue[tail++] = neighbor;
-                visited.add(neighbor);
-                // Set the neighbor's color to ORANGE (indicating it is in the queue)
-                neighbor.setColor(Color.ORANGE);
+            // Check if the current node's value matches the search value
+            if (currentNode.getValue().equals(value)) {
+                // If found, set the color to GREEN and return the node
+                currentNode.setColor(Color.GREEN);
                 updateGraphVisual();
+                return Optional.of(currentNode);
             }
+
+            // Explore the neighbors of the current node
+            for (Node<String> neighbor : currentNode.getNeighbors()) {
+                // If the neighbor has not been visited yet
+                if (!visited.contains(neighbor)) {
+                    // Check if the neighbor's value matches the search value
+                    if (neighbor.getValue().equals(value)) {
+                        // If found, set the color to GREEN and return the node
+                        neighbor.setColor(Color.GREEN);
+                        updateGraphVisual();
+                        return Optional.of(neighbor);
+                    }
+                    // Add the neighbor to the queue and mark it as visited
+                    queue[tail++] = neighbor;
+                    visited.add(neighbor);
+                    // Set the neighbor's color to ORANGE (indicating it is in the queue)
+                    neighbor.setColor(Color.ORANGE);
+                    updateGraphVisual();
+                }
+            }
+
+            // Set the current node color to GRAY (indicating it has been fully processed)
+            currentNode.setColor(Color.GRAY);
+            updateGraphVisual();
         }
 
-        // Set the current node color to GRAY (indicating it has been fully processed)
-        currentNode.setColor(Color.GRAY);
-        updateGraphVisual();
+        // If the search value is not found, return an empty Optional
+        return Optional.empty();
     }
 
-    // If the search value is not found, return an empty Optional
-    return Optional.empty();
-}
+
+    private void updateGraphVisual() {
+        graphPanel.repaint();
+        graphPanel.paintImmediately(graphPanel.getBounds());
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 
     // Inner class for drawing the graph visualization
     private class InnerGraphPanel extends JPanel {
