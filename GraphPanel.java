@@ -99,72 +99,45 @@ public class GraphPanel extends JFrame {
     }
 
     // Modified BFS search algorithm with visualization
-    public Optional<Node<String>> search(String value) {
+      public Optional<Node<String>> search(String value) {
         int n = 15;
         Node<String>[] queue = new Node[n];
-        int head = 0; // Points to the front of the queue (dequeue)
-        int tail = 0; // Points to the end of the queue (enqueue)
+        int head = 0;
+        int tail = 0;
 
         Set<Node<String>> visited = new HashSet<>();
 
-        // Enqueue the starting node
         Node<String> start = graph.getStartNode();
         queue[tail++] = start;
         visited.add(start);
 
         start.setColor(Color.ORANGE);
-        graphPanel.repaint();
-        graphPanel.paintImmediately(graphPanel.getBounds());
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        updateGraphVisual();
 
         while (head < tail) {
-            // Dequeue the next node
             Node<String> currentNode = queue[head++];
 
-            // Set the node color to represent dequeue
             currentNode.setColor(Color.RED);
-            graphPanel.repaint();
-            graphPanel.paintImmediately(graphPanel.getBounds());
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            updateGraphVisual();
 
-            // Check if we've found the value
             if (currentNode.getValue().equals(value)) {
                 currentNode.setColor(Color.GREEN);
-                graphPanel.repaint();
-                graphPanel.paintImmediately(graphPanel.getBounds());
+                updateGraphVisual();
                 return Optional.of(currentNode);
             }
 
-            // Enqueue unvisited neighbors
             for (Node<String> neighbor : currentNode.getNeighbors()) {
                 if (!visited.contains(neighbor)) {
                     queue[tail++] = neighbor;
                     visited.add(neighbor);
 
-                    // Set neighbor color to represent enqueue
                     neighbor.setColor(Color.ORANGE);
-                    graphPanel.repaint();
-                    graphPanel.paintImmediately(graphPanel.getBounds());
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    updateGraphVisual();
                 }
             }
 
-            // Mark current node as processed
             currentNode.setColor(Color.GRAY);
-            graphPanel.repaint();
-            graphPanel.paintImmediately(graphPanel.getBounds());
+            updateGraphVisual();
         }
 
         return Optional.empty();
